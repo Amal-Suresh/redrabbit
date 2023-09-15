@@ -1,10 +1,6 @@
 const User = require('../model/userModel')
 const jwt = require('jsonwebtoken')
 
-
-
-
-
 const userLogin = async (req, res) => {
     try {
         const { mobile } = req.body
@@ -12,18 +8,14 @@ const userLogin = async (req, res) => {
         if (userData) {
                 const token = jwt.sign({ id: userData._id, role: "user" }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
                 const data = token
-                console.log(data,"logintoken");
                 res.status(200).send({ success: true, message: "login successfull", data })
         } else {
             const newUser = new User({
                 mobile
             })
             const saveUserData=await newUser.save()
-            console.log( saveUserData._id,"userId");
             const token = jwt.sign({ id: saveUserData._id, role: "user" }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
             const data=token
-            console.log(data,"register token");
-
             res.status(201).send({ success: true, message: "account created successfully", data})
         }
     } catch (error) {
