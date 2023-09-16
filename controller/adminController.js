@@ -10,13 +10,7 @@ const adminLogin = async (req, res) => {
                 const data = token
                 res.status(200).send({ success: true, message: "login successfull", data })
         } else {
-            const newAdmin = new Admin({
-                mobile
-            })
-            const saveAdminData=await newAdmin.save()
-            const token = jwt.sign({ id: saveAdminData._id, role: "user" }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
-            const data=token
-            res.status(201).send({ success: true, message: "account created successfully", data})
+            res.status(401).send({ success: false, message: "invalid mobile number"})
         }
     } catch (error) {
         console.log(error.message);
