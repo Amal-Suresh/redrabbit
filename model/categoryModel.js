@@ -14,4 +14,4 @@ const categorySchema =mongoose.Schema({
         default:true
     }
 })
-module.exports = mongoose.model("user",userSchema)
+module.exports = mongoose.model("category",categorySchema)
