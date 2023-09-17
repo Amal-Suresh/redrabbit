@@ -128,6 +128,23 @@ const findAllRiders = async (req, res) => {
     }
 }
 
+const findRider=async(req,res)=>{
+    try {
+        const riderID =req.query.id
+        const rider = await Rider.findOne({_id:riderID})
+        if(!rider){
+            return res.status(201).send({success:false,message:"rider details not found"})  
+        }else{
+             res.status(200).send({success:true,message:"rider details fetched successfully",data:rider})  
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({success:false,message:"something went wrong"})  
+
+    }
+
+}
+
 
 
 
@@ -138,5 +155,6 @@ module.exports = {
     deleteRider,
     updateRider,
     riderChangeStatus,
-    findAllRiders
+    findAllRiders,
+    findRider
 }
