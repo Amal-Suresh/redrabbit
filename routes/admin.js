@@ -27,6 +27,8 @@ adminRoute.get('/findAllProducts',productController.findAllProducts)
 
 adminRoute.post('/addNewRider',upload.single('image'),riderController.createRider)
 adminRoute.delete('/deleteRider',riderController.deleteRider)
+adminRoute.patch('/updateRider',upload.single('image'),riderController.updateRider)
+
 
 
 

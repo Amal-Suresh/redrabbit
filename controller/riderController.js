@@ -63,10 +63,44 @@ const deleteRider = async (req, res) => {
     }
 }
 
+const updateRider = async (req, res) => {
+    try {
+        const { name, mobile, userName, password, licenseNumber, bloodGroup, id } = req.body
+        const findRider = await Rider.findById(id)
+        let imageUrl = ''
+        let imageId = ''
+        if (req.file) {
+            const deleteResult = await cloudinary.uploader.destroy(findRider.image.imageId)
+            const result = await cloudinary.uploader.upload(req.file.path, { folder: "riderImg" })
+            imageUrl = result.secure_url
+            imageId = result.public_id
+        } else {
+            imageUrl = findRider?.image?.imageUrl
+            imageId = findRider?.image?.imageId
+        }
+        findRider.name = name
+        findRider.mobile=mobile
+        findRider.bloodGroup=bloodGroup
+        findRider.userName=userName
+        findRider.password=password
+        findRider.licenseNumber=licenseNumber
+        const updateRider = await findRider.save()
+        if (updateRider) {
+            res.status(200).send({ success: true, message: "rider details updated successfully" })
+        } else {
+            res.status(401).send({ success: false, message: "rider details update failed!" })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }
+}
+
 
 
 
 module.exports = {
     createRider,
-    deleteRider
+    deleteRider,
+    updateRider
 }
