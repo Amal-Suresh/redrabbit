@@ -96,11 +96,30 @@ const updateRider = async (req, res) => {
     }
 }
 
+const riderChangeStatus = async (req, res) => {
+    try {
+        const { id } = req.query
+        const findRider = await Rider.findOne({ _id: id })
+        findRider.isBlocked = !findRider.isBlocked
+        const updateStatus = await findRider.save()
+        if (updateStatus) {
+            res.status(200).send({ success: true, message: "rider status changed successfully" })
+        } else {
+            res.status(200).send({ success: true, message: "rider status change failed" })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }
+}
+
+
 
 
 
 module.exports = {
     createRider,
     deleteRider,
-    updateRider
+    updateRider,
+    riderChangeStatus
 }
