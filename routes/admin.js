@@ -1,6 +1,7 @@
 const express=require('express')
 const adminController=require('../controller/adminController')
 const productController=require('../controller/productContoller')
+const riderController =require('../controller/riderController')
 const adminRoute=express()
 const multer = require('multer')
 const path = require('path');
@@ -23,6 +24,10 @@ adminRoute.delete('/deleteProduct',productController.deleteProduct)
 adminRoute.patch('/updateProduct',upload.single('image'),productController.updateProduct)
 adminRoute.patch('/changeProductStatus',productController.productChangeStatus)
 adminRoute.get('/findAllProducts',productController.findAllProducts)
+
+adminRoute.post('/addNewRider',upload.single('image'),riderController.createRider)
+
+
 
 
 
