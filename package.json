@@ -9,6 +9,9 @@
   },
   "author": "",
   "license": "ISC",
+  "engines": {
+    "node": ">=14.0.0 <15.0.0"
+  },
   "dependencies": {
     "cloudinary": "^1.40.0",
     "colors": "^1.4.0",
