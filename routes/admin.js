@@ -24,11 +24,16 @@ adminRoute.delete('/deleteProduct',productController.deleteProduct)
 adminRoute.patch('/updateProduct',upload.single('image'),productController.updateProduct)
 adminRoute.patch('/changeProductStatus',productController.productChangeStatus)
 adminRoute.get('/findAllProducts',productController.findAllProducts)
+adminRoute.get('/findSingleProduct',productController.findProduct)
+
 
 adminRoute.post('/addNewRider',upload.single('image'),riderController.createRider)
 adminRoute.delete('/deleteRider',riderController.deleteRider)
 adminRoute.patch('/updateRider',upload.single('image'),riderController.updateRider)
 adminRoute.patch('/changeRiderStatus',riderController.riderChangeStatus)
+adminRoute.get('/fetchAllRiders',riderController.findAllRiders)
+adminRoute.get('/fetchSingleRider',riderController.findRider)
+
 
 
 
