@@ -24,6 +24,8 @@ adminRoute.delete('/deleteProduct',productController.deleteProduct)
 adminRoute.patch('/updateProduct',upload.single('image'),productController.updateProduct)
 adminRoute.patch('/changeProductStatus',productController.productChangeStatus)
 adminRoute.get('/findAllProducts',productController.findAllProducts)
+adminRoute.get('/findSingleProduct',productController.findProduct)
+
 
 adminRoute.post('/addNewRider',upload.single('image'),riderController.createRider)
 adminRoute.delete('/deleteRider',riderController.deleteRider)

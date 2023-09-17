@@ -118,10 +118,28 @@ const findAllProducts = async (req, res) => {
     }
 }
 
+const findProduct=async(req,res)=>{
+    try {
+        const productID =req.query.id
+        const product = await Product.findOne({_id:productID})
+        if(!product){
+            return res.status(201).send({success:false,message:"product details not found"})  
+        }else{
+             res.status(200).send({success:true,message:"product details fetched successfully",data:product})  
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({success:false,message:"something went wrong"})  
+
+    }
+
+}
+
 module.exports = {
     addProduct,
     deleteProduct,
     updateProduct,
     productChangeStatus,
-    findAllProducts
+    findAllProducts,
+    findProduct
 }
