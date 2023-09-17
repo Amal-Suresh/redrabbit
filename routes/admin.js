@@ -29,6 +29,7 @@ adminRoute.post('/addNewRider',upload.single('image'),riderController.createRide
 adminRoute.delete('/deleteRider',riderController.deleteRider)
 adminRoute.patch('/updateRider',upload.single('image'),riderController.updateRider)
 adminRoute.patch('/changeRiderStatus',riderController.riderChangeStatus)
+adminRoute.get('/fetchAllRiders',riderController.findAllRiders)
 
 
 
