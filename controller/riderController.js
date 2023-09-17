@@ -42,6 +42,31 @@ const createRider = async (req, res) => {
     }
 }
 
+
+const deleteRider = async (req, res) => {
+    try {
+        let riderId = req.query.id
+        const findRider = await Rider.findOne({ _id: riderId })
+        let imageId = findRider?.image?.imageId
+        if (imageId) {
+            const result = await cloudinary.uploader.destroy(imageId)
+        }
+        const deleteRider = await Rider.findOneAndDelete({ _id: riderId })
+        if (deleteRider) {
+            res.status(200).send({ success: true, message: "rider account deleted successfully" })
+        } else {
+            res.status(401).send({ success: false, message: "failed to delete rider account" })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }
+}
+
+
+
+
 module.exports = {
-    createRider
+    createRider,
+    deleteRider
 }
