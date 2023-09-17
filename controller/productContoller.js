@@ -87,13 +87,25 @@ const updateProduct = async(req,res)=>{
     }
 }
 
-
-
+const productChangeStatus=async(req,res)=>{
+try {
+    const {id}=req.query
+    const findProduct = await Product.findOne({_id:id})
+    findProduct.isBlocked=!findProduct.isBlocked
+    const updateStatus=await findProduct.save()
+    if(updateStatus){
+        res.status(200).send({success:true,message:"product status changed successfully"})
+    }else{
+        res.status(200).send({success:true,message:"product status change failed"})
+    }
+} catch (error) {
+    console.log(error.message);
+    res.status(500).send({ success: false, message: "something went wrong" })   
+}} 
 
 module.exports = {
     addProduct,
     deleteProduct,
     updateProduct,
-    
-    
+    productChangeStatus 
 }
