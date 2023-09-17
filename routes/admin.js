@@ -20,6 +20,8 @@ const storage = multer.diskStorage({
 adminRoute.post('/login',adminController.adminLogin)
 adminRoute.post('/addProduct',upload.single('image'),productController.addProduct)
 adminRoute.delete('/deleteProduct',productController.deleteProduct)
+adminRoute.post('/updateProduct',upload.single('image'),productController.updateProduct)
+
 
 
 module.exports=adminRoute;
