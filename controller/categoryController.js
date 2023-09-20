@@ -1,6 +1,5 @@
 const Category = require('../model/categoryModel')
-const cloudinary = require('../Config/cloudinary.js')
-const categoryModel = require('../model/categoryModel')
+const cloudinary = require('../utils/cloudnery')
 
 
 // ------------------------------------------------Add Catetogy------------------------------------------------
