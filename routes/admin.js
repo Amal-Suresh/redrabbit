@@ -2,6 +2,7 @@ const express=require('express')
 const adminController=require('../controller/adminController')
 const productController=require('../controller/productContoller')
 const riderController =require('../controller/riderController')
+const categoryController = require('../controller/categoryController')
 const adminRoute=express()
 const multer = require('multer')
 const path = require('path');
@@ -35,7 +36,11 @@ adminRoute.get('/fetchAllRiders',riderController.findAllRiders)
 adminRoute.get('/fetchSingleRider',riderController.findRider)
 
 
-
+adminRoute.post('/addCategory',upload.single('image'),categoryController.addCategory)
+adminRoute.patch('/editCategory',upload.single('image'),categoryController.editCategory)
+adminRoute.patch('/list',categoryController.listCategory)
+adminRoute.patch('/unlist',categoryController.unlistCategory)
+adminRoute.delete('/deleteCategory',categoryController.deleteCategory)
 
 
 
