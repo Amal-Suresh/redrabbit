@@ -35,7 +35,11 @@ adminRoute.get('/fetchAllRiders',riderController.findAllRiders)
 adminRoute.get('/fetchSingleRider',riderController.findRider)
 
 
-
+adminRoute.post('/addCategory',upload.single('image'),categoryController.addCategory)
+adminRoute.patch('/editCategory',upload.single('image'),categoryController.editCategory)
+adminRoute.patch('/list',categoryController.listCategory)
+adminRoute.patch('/unlist',categoryController.unlistCategory)
+adminRoute.delete('/deleteCategory',categoryController.unlistCategory)
 
 
 
