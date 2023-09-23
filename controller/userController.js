@@ -1,6 +1,7 @@
 const User = require('../model/userModel')
 const jwt = require('jsonwebtoken')
 const Product = require('../model/productModel')
+const Cart = require('../model/cartModel')
 
 const userLogin = async (req, res) => {
     try {
@@ -47,7 +48,51 @@ const getProducts = async (req, res) => {
     }
 }
 
+const updateCart = async (req, res) => {
+    try {
+        const { userId, productId } = req.body
+        let quantity = req.body.quantity ?? 1
+        let cart = await Cart.findOne({ userId });
+        let message = "Product added successfully"
+        if (!cart) {
+            cart = new Cart({
+                userId,
+                products: [{ productId, quantity }]
+            });
+        } else {
+            const existingProduct = cart.products.find(product => product.productId.equals(productId));
+            if (existingProduct) {
+                existingProduct.quantity += Number(quantity);
+                if (existingProduct.quantity <= 0) {
+                    cart.products = cart.products.filter(product => !product.productId.equals(productId));
+                }
+            } else {
+                cart.products.push({ productId, quantity });
+            }
+        }
+        // } else {
+        //     const existingProductIndex = cart.products.findIndex(product => product.productId.equals(productId));
+        //     if (existingProductIndex !== -1) {
+        //         cart.products[existingProductIndex].quantity += Number(quantity);
+        //         // remove product if quantity less than or equal to zero
+        //         if (cart.products[existingProductIndex].quantity <= 0) {
+        //             cart.products.splice(existingProductIndex, 1)
+        //             message = "Product removed successfully"
+        //         }
+        //     } else {
+        //         cart.products.push({ productId, quantity });
+        //     }
+        // }
+        const status = await cart.save();
+        res.status(200).send({ success: true, message })
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "Error adding products" })
+    }
+}
+
 module.exports = {
     userLogin,
-    getProducts
+    getProducts,
+    updateCart
 }
