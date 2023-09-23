@@ -6,7 +6,7 @@ const color = require('colors')
 require('dotenv').config()
 
 mongoose.connect(process.env.MONGO_URL).then(() => {
-    console.log("DB connected".red.bold);
+    console.log("DB connected".green.bold);
 })
 
 
