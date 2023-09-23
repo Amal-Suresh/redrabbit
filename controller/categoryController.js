@@ -5,6 +5,7 @@ const cloudinary = require('../utils/cloudnery')
 // ------------------------------------------------Add Catetogy------------------------------------------------
 const addCategory = async (req, res) => {
     try {
+        console.log("entered add category")
         const existingCategory = await Category.findOne({ name: req.body.category })
         if (existingCategory) {
             res.status(200).json({ message: "Category already Exists" })

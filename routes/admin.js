@@ -43,9 +43,4 @@ adminRoute.patch('/unlist',categoryController.unlistCategory)
 adminRoute.delete('/deleteCategory',categoryController.deleteCategory)
 
 
-
-
-
-
-
 module.exports=adminRoute;
