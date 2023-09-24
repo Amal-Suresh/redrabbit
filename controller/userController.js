@@ -2,6 +2,7 @@ const User = require('../model/userModel')
 const jwt = require('jsonwebtoken')
 const Product = require('../model/productModel')
 const Cart = require('../model/cartModel')
+const mongoose = require('mongoose')
 
 const userLogin = async (req, res) => {
     try {
@@ -70,19 +71,6 @@ const updateCart = async (req, res) => {
                 cart.products.push({ productId, quantity });
             }
         }
-        // } else {
-        //     const existingProductIndex = cart.products.findIndex(product => product.productId.equals(productId));
-        //     if (existingProductIndex !== -1) {
-        //         cart.products[existingProductIndex].quantity += Number(quantity);
-        //         // remove product if quantity less than or equal to zero
-        //         if (cart.products[existingProductIndex].quantity <= 0) {
-        //             cart.products.splice(existingProductIndex, 1)
-        //             message = "Product removed successfully"
-        //         }
-        //     } else {
-        //         cart.products.push({ productId, quantity });
-        //     }
-        // }
         const status = await cart.save();
         res.status(200).send({ success: true, message })
     } catch (error) {
@@ -91,8 +79,41 @@ const updateCart = async (req, res) => {
     }
 }
 
+const showCartData = async (req, res) => {
+    const { userId } = req.params
+    try {
+        const cartItems = await Cart.aggregate([
+            { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+            {
+                $lookup: {
+                    from: 'products',
+                    localField: 'products.productId',
+                    foreignField: '_id',
+                    as: 'productDetails',
+                },
+            },
+            {
+                $project: {
+                    'productDetails._id': 1,
+                    'productDetails.name': 1,
+                    'productDetails.category': 1,
+                    'productDetails.image': 1,
+                    'productDetails.description': 1,
+                    'productDetails.price': 1,
+                },
+            },
+        ])
+        res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems })
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "Error getting cart data" })
+    }
+
+}
+
 module.exports = {
     userLogin,
     getProducts,
-    updateCart
+    updateCart,
+    showCartData
 }
