@@ -4,7 +4,7 @@ const cloudinary = require('../utils/cloudnery')
 
 const addProduct = async (req, res) => {
     try {
-        const { name, discription, category, price } = req.body
+        const { name, description, category, price } = req.body
         let imageUrl = ''
         let imageId = ''
         if (req.file) {
@@ -14,7 +14,7 @@ const addProduct = async (req, res) => {
         }
         const product = new Product({
             name,
-            discription,
+            description,
             category,
             price,
             image: {
@@ -56,7 +56,7 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
-        const { id, category, discription, name, price } = req.body
+        const { id, category, description, name, price } = req.body
         const findProduct = await Product.findOne({ _id: id })
         let imageUrl = ''
         let imageId = ''
@@ -72,7 +72,7 @@ const updateProduct = async (req, res) => {
         findProduct.name = name
         findProduct.price = price
         findProduct.category = category
-        findProduct.discription = discription
+        findProduct.description = description
         findProduct.image.imageUrl = imageUrl
         findProduct.image.imageId = imageId
         const updatePro = await findProduct.save()
