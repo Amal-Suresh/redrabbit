@@ -93,10 +93,24 @@ const deleteCategory = async (req, res) => {
     }
 }
 
+// ------------------------------------------------get Catetogy------------------------------------------------
+
+const getCategory = async (req, res) => {
+    try {
+        console.log("entered getCategory")
+        const getCategory = await Category.find()
+        console.log("getCategory : ",getCategory)
+        res.status(200).json({ message: "successfully deleted",getCategory})
+    } catch (error) {
+        console.log("error : ", error.message)
+
+    }
+}
 module.exports = {
     addCategory,
     editCategory,
     listCategory,
     unlistCategory,
-    deleteCategory
+    deleteCategory,
+    getCategory
 }

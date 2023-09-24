@@ -43,6 +43,9 @@ adminRoute.patch('/editCategory',upload.single('image'),categoryController.editC
 adminRoute.patch('/list',categoryController.listCategory)
 adminRoute.patch('/unlist',categoryController.unlistCategory)
 adminRoute.delete('/deleteCategory',categoryController.deleteCategory)
+adminRoute.get('/getCategory',categoryController.getCategory)
+
+
 
 
 module.exports=adminRoute;
