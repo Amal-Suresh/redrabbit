@@ -111,9 +111,21 @@ const showCartData = async (req, res) => {
 
 }
 
+const saveUserName = async(req,res)=>{
+    try {
+        console.log("reached  save username");
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+        
+    }
+}
+
 module.exports = {
     userLogin,
     getProducts,
     updateCart,
-    showCartData
+    showCartData,
+    saveUserName
 }
