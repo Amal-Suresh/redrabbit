@@ -7,7 +7,7 @@ userRoute.post('/userLogin',userController.userLogin)
 
 userRoute.get('/products', userController.getProducts)
 userRoute.post('/addtocart',auth.userAuth,userController.updateCart)
-userRoute.get('/cart/:userId',auth.userAuth,userController.showCartData)
+userRoute.get('/cart',auth.userAuth,userController.showCartData)
 
 userRoute.post('/saveUserName',auth.userAuth,userController.saveUserName)
 

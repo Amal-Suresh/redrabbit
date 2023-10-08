@@ -81,8 +81,13 @@ const updateCart = async (req, res) => {
 }
 
 const showCartData = async (req, res) => {
-    const { userId } = req.params
+    const userId = req.id
     try {
+        // const cartItems1 = await Cart.findOne({ userId })
+        //     .populate('products.productId', 'name category image description price')
+        //     .select('products')
+        //     .lean();
+
         const cartItems = await Cart.aggregate([
             { $match: { userId: new mongoose.Types.ObjectId(userId) } },
             {
@@ -104,6 +109,8 @@ const showCartData = async (req, res) => {
                 },
             },
         ])
+       
+
         res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems })
     } catch (error) {
         console.log(error.message);
