@@ -15,6 +15,8 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 
+
+
 app.use(cors({
     origin: 'http://localhost:3000',
     methods: ['GET', 'POST','DELETE','PUT','PATCH'], // Allow specific HTTP methods

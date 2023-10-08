@@ -51,7 +51,8 @@ const getProducts = async (req, res) => {
 
 const updateCart = async (req, res) => {
     try {
-        const { userId, productId } = req.body
+        const userId = req.id
+        const { productId } = req.body
         let quantity = req.body.quantity ?? 1
         let cart = await Cart.findOne({ userId });
         let message = "Product added successfully"
@@ -80,8 +81,13 @@ const updateCart = async (req, res) => {
 }
 
 const showCartData = async (req, res) => {
-    const { userId } = req.params
+    const userId = req.id
     try {
+        // const cartItems1 = await Cart.findOne({ userId })
+        //     .populate('products.productId', 'name category image description price')
+        //     .select('products')
+        //     .lean();
+
         const cartItems = await Cart.aggregate([
             { $match: { userId: new mongoose.Types.ObjectId(userId) } },
             {
@@ -103,6 +109,8 @@ const showCartData = async (req, res) => {
                 },
             },
         ])
+       
+
         res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems })
     } catch (error) {
         console.log(error.message);
@@ -111,9 +119,26 @@ const showCartData = async (req, res) => {
 
 }
 
+const saveUserName = async(req,res)=>{
+    try {
+        let userId =req.id
+        let newName= req.body.name
+        const userData = await  User.findOneAndUpdate({_id:userId},{ $set: { name: newName } })
+        if(userData){
+          return  res.status(200).send({success:true ,message:"username saved sucessfully"})
+        }else{
+          return  res.status(401).send({success:false ,message:"failed to add username"})
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" }) 
+    }
+}
+
 module.exports = {
     userLogin,
     getProducts,
     updateCart,
-    showCartData
+    showCartData,
+    saveUserName
 }
