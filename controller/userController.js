@@ -51,7 +51,8 @@ const getProducts = async (req, res) => {
 
 const updateCart = async (req, res) => {
     try {
-        const { userId, productId } = req.body
+        const userId = req.id
+        const { productId } = req.body
         let quantity = req.body.quantity ?? 1
         let cart = await Cart.findOne({ userId });
         let message = "Product added successfully"
