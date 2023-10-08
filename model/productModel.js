@@ -24,7 +24,7 @@ const productSchema =mongoose.Schema({
     },
     isBlocked:{
         type:Boolean,
-        default:true
+        default:false
     }
 })
 module.exports = mongoose.model("product",productSchema)
