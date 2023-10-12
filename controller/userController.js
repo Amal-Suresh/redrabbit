@@ -61,10 +61,10 @@ const updateCart = async (req, res) => {
                 products: [{ productId, quantity }]
             });
         } else {
-            const existingProduct = cart.products.find(product => product.productId.equals(productId));
-            if (existingProduct) {
-                existingProduct.quantity += Number(quantity);
-                if (existingProduct.quantity <= 0) {
+            const productExists = cart.products.find(product => product.productId.equals(productId));
+            if (productExists) {
+                productExists.quantity += Number(quantity);
+                if (productExists.quantity <= 0) {
                     cart.products = cart.products.filter(product => !product.productId.equals(productId));
                 }
             } else {
@@ -108,7 +108,6 @@ const showCartData = async (req, res) => {
         console.log(error.message);
         res.status(500).send({ success: false, message: "Error getting cart data" })
     }
-
 }
 
 module.exports = {
