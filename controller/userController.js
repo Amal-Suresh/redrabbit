@@ -140,22 +140,14 @@ const saveUserName = async(req,res)=>{
 const findAllCategory = async(req,res)=>{
     try {
         const categoryData = await Category.find({isBlocked:false})
-        console.log(categoryData,"ppppoooopppoooppp");
         if(!categoryData){
-
          return  res.status(401).send({success:false ,message:"failed to fetch category"})
-         
         }else{
-            res.status(200).send({success:true ,message:"category fetched successfully",data:categoryData}) 
-
+            res.status(200).send({success:true ,message:"category fetched successfully",data:categoryData})  
         }
-
-       
-        
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({ success: false, message: "something went wrong" }) 
-        
+        res.status(500).send({ success: false, message: "something went wrong" })  
     }
 }
 
