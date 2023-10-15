@@ -5,7 +5,7 @@ const userSchema =mongoose.Schema({
         type:String,  
     },
      mobile:{
-        type:Number,
+        type:String,
         require:true
     },
     image:{
