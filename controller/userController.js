@@ -1,6 +1,8 @@
 const User = require('../model/userModel')
 const jwt = require('jsonwebtoken')
 const Product = require('../model/productModel')
+const Category = require('../model/categoryModel')
+
 const Cart = require('../model/cartModel')
 const mongoose = require('mongoose')
 
@@ -134,10 +136,26 @@ const saveUserName = async(req,res)=>{
     }
 }
 
+
+const findAllCategory = async(req,res)=>{
+    try {
+        const categoryData = await Category.find({isBlocked:false})
+        if(!categoryData){
+         return  res.status(401).send({success:false ,message:"failed to fetch category"})
+        }else{
+            res.status(200).send({success:true ,message:"category fetched successfully",data:categoryData})  
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })  
+    }
+}
+
 module.exports = {
     userLogin,
     getProducts,
     updateCart,
     showCartData,
-    saveUserName
+    saveUserName,
+    findAllCategory
 }
