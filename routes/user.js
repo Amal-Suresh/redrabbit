@@ -3,6 +3,7 @@ const userRoute=express()
 const userController = require('../controller/userController')
 const auth = require('../middleware/auth')
 
+userRoute.post('/checkIfUser',userController.checkIfUser)
 userRoute.post('/userLogin',userController.userLogin)
 
 userRoute.get('/products', userController.getProducts)
