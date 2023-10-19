@@ -176,6 +176,19 @@ const checkIfUser = async (req, res) => {
     }
 };
 
+const fetchUser=async (req,res)=>{
+
+    try {
+        console.log("fetch user reached");
+        console.log(req.id);
+        
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ message: "Something went wrong", success: false });
+        
+    }
+}
+
 module.exports = {
     userLogin,
     getProducts,
@@ -183,5 +196,6 @@ module.exports = {
     showCartData,
     saveUserName,
     findAllCategory,
-    checkIfUser
+    checkIfUser,
+    fetchUser
 }
