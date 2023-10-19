@@ -111,7 +111,7 @@ const showCartData = async (req, res) => {
                 },
             },
         ])
-       
+
 
         res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems })
     } catch (error) {
@@ -120,34 +120,34 @@ const showCartData = async (req, res) => {
     }
 }
 
-const saveUserName = async(req,res)=>{
+const saveUserName = async (req, res) => {
     try {
-        let userId =req.id
-        let newName= req.body.name
-        const userData = await  User.findOneAndUpdate({_id:userId},{ $set: { name: newName } })
-        if(userData){
-          return  res.status(200).send({success:true ,message:"username saved sucessfully"})
-        }else{
-          return  res.status(401).send({success:false ,message:"failed to add username"})
+        let userId = req.id
+        let newName = req.body.name
+        const userData = await User.findOneAndUpdate({ _id: userId }, { $set: { name: newName } })
+        if (userData) {
+            return res.status(200).send({ success: true, message: "username saved sucessfully" })
+        } else {
+            return res.status(401).send({ success: false, message: "failed to add username" })
         }
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({ success: false, message: "something went wrong" }) 
+        res.status(500).send({ success: false, message: "something went wrong" })
     }
 }
 
 
-const findAllCategory = async(req,res)=>{
+const findAllCategory = async (req, res) => {
     try {
-        const categoryData = await Category.find({isBlocked:false})
-        if(!categoryData){
-         return  res.status(401).send({success:false ,message:"failed to fetch category"})
-        }else{
-            res.status(200).send({success:true ,message:"category fetched successfully",data:categoryData})  
+        const categoryData = await Category.find({ isBlocked: false })
+        if (!categoryData) {
+            return res.status(401).send({ success: false, message: "failed to fetch category" })
+        } else {
+            res.status(200).send({ success: true, message: "category fetched successfully", data: categoryData })
         }
     } catch (error) {
         console.log(error.message);
-        res.status(500).send({ success: false, message: "something went wrong" })  
+        res.status(500).send({ success: false, message: "something went wrong" })
     }
 }
 
@@ -156,18 +156,18 @@ const checkIfUser = async (req, res) => {
     try {
         const tokenWithBearer = req.headers['authorization'];
         const token = tokenWithBearer.split(" ")[1];
-        jwt.verify(token,process.env.JWT_SECRET_KEY, async (err, encoded) => {
+        jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, encoded) => {
             if (err) {
                 return res.status(401).send({ message: "Auth failed", success: false });
             }
             if (encoded.role === 'user') {
-                if(encoded.exp &&Date.now() >= encoded.exp*1000){
-                    return res.status(401).send({success:false,message:"token expired"})
-                }else{
-                  return res.status(200).send({ message: "Auth successful", success: true });
-                }      
-            }else{
-                res.status(401).send({ message: "unknown token", success: false }); 
+                if (encoded.exp && Date.now() >= encoded.exp * 1000) {
+                    return res.status(401).send({ success: false, message: "token expired" })
+                } else {
+                    return res.status(200).send({ message: "Auth successful", success: true });
+                }
+            } else {
+                res.status(401).send({ message: "unknown token", success: false });
             }
         });
     } catch (error) {
@@ -176,16 +176,17 @@ const checkIfUser = async (req, res) => {
     }
 };
 
-const fetchUser=async (req,res)=>{
-
+const fetchUser = async (req, res) => {
     try {
-        console.log("fetch user reached");
-        console.log(req.id);
-        
+        const userData = await User.findOne({ _id: req.id })
+        if (userData) {
+            return res.status(200).send({ message: "user details fetched successfully", success: true, data: userData });
+        } else {
+            res.status(401).send({ message: "user not found", success: false });
+        }
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ message: "Something went wrong", success: false });
-        
     }
 }
 
