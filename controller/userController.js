@@ -109,10 +109,8 @@ const showCartData = async (req, res) => {
         //             'productDetails.price': 1,
         //         },
         //     },
-        // ])
-
-
-        res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems })
+        // ]) 
+        res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems1  })
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ success: false, message: "Error getting cart data" })
