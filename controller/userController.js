@@ -85,32 +85,31 @@ const updateCart = async (req, res) => {
 const showCartData = async (req, res) => {
     const userId = req.id
     try {
-        // const cartItems1 = await Cart.findOne({ userId })
-        //     .populate('products.productId', 'name category image description price')
-        //     .select('products')
-        //     .lean();
+        const cartItems1 = await Cart.findOne({ userId })
+            .populate('products.productId', 'name category image description price')
+            .select('products')
+            .lean();
 
-        const cartItems = await Cart.aggregate([
-            { $match: { userId: new mongoose.Types.ObjectId(userId) } },
-            {
-                $lookup: {
-                    from: 'products',
-                    localField: 'products.productId',
-                    foreignField: '_id',
-                    as: 'productDetails',
-                },
-            },
-            {
-                $project: {
-                    'productDetails._id': 1,
-                    'productDetails.name': 1,
-                    'productDetails.category': 1,
-                    'productDetails.image': 1,
-                    'productDetails.description': 1,
-                    'productDetails.price': 1,
-                },
-            },
-        ])
+        // const cartItems = await Cart.aggregate([
+        //     { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+        //     {
+        //         $lookup: {
+        //             from: 'products',
+        //             localField: 'products.productId',
+        //             foreignField: '_id',
+        //             as: 'productDetails',
+        //         },
+        //     },
+        //         $project: {
+        //             'productDetails._id': 1,
+        //             'productDetails.name': 1,
+        //             'productDetails.category': 1,
+        //             'productDetails.image': 1,
+        //             'productDetails.description': 1,
+        //             'productDetails.price': 1,
+        //         },
+        //     },
+        // ])
 
 
         res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems })
