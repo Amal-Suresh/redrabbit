@@ -14,6 +14,14 @@ const userSchema =mongoose.Schema({
     status:{
         type:Boolean,
         default:true
-    }
+    }, address: [{
+        name:{type:String},
+        address:{type:String},
+        city:{type:String},
+        pin:{type:Number},
+        state:{type:String},
+        mobile:{type:String},
+        status:{type:Boolean,default:false}
+    }]
 })
 module.exports = mongoose.model("user",userSchema)
