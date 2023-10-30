@@ -24,10 +24,6 @@ const orderSchema =mongoose.Schema({
         ref:'cart',
         required:true
     },
-    modeOfDelivery:{
-       type:String,
-       required:true
-    },
     totalAmount:{
         type:Number,
         required:true
@@ -36,7 +32,11 @@ const orderSchema =mongoose.Schema({
         type:String,
         required:true
     },
-    status:{
+    paymentStaus:{
+        type:String,
+        required:true
+    },
+    orderStatus:{
         type:String,
         required:true
     },
