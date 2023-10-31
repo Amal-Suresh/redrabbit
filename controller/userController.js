@@ -220,5 +220,6 @@ module.exports = {
     saveUserName,
     findAllCategory,
     checkIfUser,
-    fetchUser
+    fetchUser,
+    addAddress  
 }
