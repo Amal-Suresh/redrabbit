@@ -40,7 +40,7 @@ const userAuth = async (req, res, next) => {
             if (encoded.role === 'user') {
                 if (encoded.exp && Date.now() >= encoded.exp * 1000) {
                     return res.status(401).send({ success: false, message: "token expired" })
-                } else {
+                } else {                   
                     req.id = encoded.id
                     next()
                 }

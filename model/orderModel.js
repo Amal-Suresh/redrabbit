@@ -6,18 +6,13 @@ const orderSchema =mongoose.Schema({
         ref:'user',
         required:true
     },
-    phone:{
-        type:Number,
-        required:true
-    },
     address:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'address',
+        type:Object,
         required:true
     },
     location:{
         type:String,
-        required:true
+        // required:true
     },
     product:{
         type:mongoose.Schema.Types.ObjectId,
@@ -32,7 +27,7 @@ const orderSchema =mongoose.Schema({
         type:String,
         required:true
     },
-    paymentStaus:{
+    paymentStatus:{
         type:String,
         required:true
     },
