@@ -11,5 +11,9 @@ userRoute.post('/addtocart',auth.userAuth,userController.updateCart)
 userRoute.get('/cart',auth.userAuth,userController.showCartData)
 
 userRoute.post('/saveUserName',userController.saveUserName)
+
+
 userRoute.post('/codOrder',auth.userAuth,orderController.CodOrder)
+userRoute.post('/onlinePayment',auth.userAuth,orderController.onlinePayment)
+userRoute.post('/verifypayment',auth.userAuth,orderController.Verifypayment)
 module.exports=userRoute;
