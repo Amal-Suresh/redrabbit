@@ -1,5 +1,7 @@
 const order = require('../model/orderModel')
 
+// ---------------------------------------------------- Cod payment --------------------------------------------
+
 const CodOrder = async (req,res) =>{
    try {
     console.log("req.body : ",req.body)
@@ -28,6 +30,8 @@ const CodOrder = async (req,res) =>{
    }
 }
 
+// ----------------------------------------------------Initialize razorpay --------------------------------------------
+
 const onlinePayment = async (req, res) => {
     try {
       console.log("entetered payment")
@@ -51,6 +55,8 @@ const onlinePayment = async (req, res) => {
   
     }
   }
+
+// ---------------------------------------------------- Varify --------------------------------------------
 
   const Verifypayment = async (req, res) => {
     try {
@@ -79,6 +85,24 @@ const onlinePayment = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
-  module.exports={
-    CodOrder,onlinePayment,Verifypayment
+
+
+// ---------------------------------------------------- getOrders --------------------------------------------
+
+const getOrders = async(req,res) =>{
+   try {
+      console.log("getOrders")
+      const orderData = await order.find().populate('userId').populate('product')
+      if(orderData){
+        return res.status(200).json({status:true,orderData})
+      }else{
+        return res.status(200).json({status:false,message:"no orders found"})
+      }
+   } catch (error){
+     res.status(500).json({message:"internal server error"})
+   }
+}
+
+module.exports={
+    CodOrder,onlinePayment,Verifypayment,getOrders
 }

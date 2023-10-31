@@ -16,4 +16,6 @@ userRoute.post('/saveUserName',userController.saveUserName)
 userRoute.post('/codOrder',auth.userAuth,orderController.CodOrder)
 userRoute.post('/onlinePayment',auth.userAuth,orderController.onlinePayment)
 userRoute.post('/verifypayment',auth.userAuth,orderController.Verifypayment)
+userRoute.get('/getOrders',auth.userAuth,orderController.getOrders)
+
 module.exports=userRoute;
