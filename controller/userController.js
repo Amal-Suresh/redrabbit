@@ -212,6 +212,24 @@ const addAddress = async (req, res) => {
     }
 }
 
+
+const deleteAddress = async (req, res) => {
+    try {
+        const userId = req.id
+        const deleteAdres= await User.findByIdAndUpdate(userId, {
+            $pull: { address: { _id: req.query.id } }
+        })
+        if(deleteAdres){
+            res.status(200).send({ success: true, message: "address deleted" })
+        }else{
+            res.status(401).send({ success: false, message: "failed to delete address" })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }
+}
+
 module.exports = {
     userLogin,
     getProducts,
@@ -221,5 +239,6 @@ module.exports = {
     findAllCategory,
     checkIfUser,
     fetchUser,
-    addAddress  
+    addAddress,
+    deleteAddress  
 }
