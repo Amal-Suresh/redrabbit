@@ -110,7 +110,7 @@ const showCartData = async (req, res) => {
         //         },
         //     },
         // ]) 
-        res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems1  })
+        res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems1 })
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ success: false, message: "Error getting cart data" })
@@ -184,6 +184,31 @@ const fetchUser = async (req, res) => {
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ message: "Something went wrong", success: false });
+    }
+}
+
+const addAddress = async (req, res) => {
+    try {
+        const userId = req.id
+        let { name, city, pin, mobile, address, state } = req.body
+        const newAddress = {
+            name,
+            city,
+            pin,
+            mobile,
+            address,
+            state,
+        }
+        const updateAddress = await User.findByIdAndUpdate({ _id: userId }, { $addToSet: { address: newAddress } })
+        if (updateAddress) {
+            const updatedUser = await User.findById({ _id: userId }).populate('address').lean()
+            res.status(200).send({ success: true, data: updatedUser.address, message: "address added successfully" })
+        } else {
+            res.status(401).send({ success: false, message: "failed to add address" })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
     }
 }
 
