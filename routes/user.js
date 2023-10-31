@@ -17,6 +17,9 @@ userRoute.post('/addAddress',auth.userAuth,userController.addAddress)
 userRoute.delete('/deleteAddress',auth.userAuth,userController.deleteAddress)
 userRoute.get('/getAddress',auth.userAuth,userController.getAddress)
 
+userRoute.post('/updateAddress',auth.userAuth,userController.updateAddress)
+
+
 
 
 

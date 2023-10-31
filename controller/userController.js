@@ -246,7 +246,35 @@ const getAddress = async (req, res) => {
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ success: false, message: "something went wrong" })
-        
+    }
+}
+
+
+const updateAddress = async (req, res) => {
+    try {
+        const userId = req.id
+        const addressId = req.body.id
+        const updateResult = await User.updateOne(
+            { _id: userId, 'address._id': addressId },
+            {
+                $set: {
+                    'address.$.name': req.body.name,
+                    'address.$.address': req.body.address,
+                    'address.$.city': req.body.city,
+                    'address.$.state': req.body.state,
+                    'address.$.mobile': req.body.mobile,
+                    'address.$.pin': req.body.pin,
+                },
+            }
+        );
+        if(updateResult){
+            res.status(200).send({ success: true, message: "address updated" })
+        }else{
+            res.status(401).send({ success: false, message: "address not updated" })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
     }
 }
 
@@ -261,5 +289,6 @@ module.exports = {
     fetchUser,
     addAddress,
     deleteAddress,
-    getAddress
+    getAddress,
+    updateAddress
 }
