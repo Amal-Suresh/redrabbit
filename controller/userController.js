@@ -5,6 +5,7 @@ const Category = require('../model/categoryModel')
 
 const Cart = require('../model/cartModel')
 const mongoose = require('mongoose')
+const { query } = require('express')
 
 const userLogin = async (req, res) => {
     try {
@@ -230,6 +231,25 @@ const deleteAddress = async (req, res) => {
     }
 }
 
+const getAddress = async (req, res) => {
+    try {
+        const addressId = req.query.id
+        const userId = req.id
+        const { address: [addressEditData] } = await User.findOne(
+            { _id: userId },
+            { address: { $elemMatch: { _id: addressId } } }).lean()
+            if(addressEditData){
+                res.status(200).send({ success: true, message: "address found",data:addressEditData })
+            }else{
+                res.status(401).send({ success: false, message: "address not found" })
+            }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+        
+    }
+}
+
 module.exports = {
     userLogin,
     getProducts,
@@ -240,5 +260,6 @@ module.exports = {
     checkIfUser,
     fetchUser,
     addAddress,
-    deleteAddress  
+    deleteAddress,
+    getAddress
 }
