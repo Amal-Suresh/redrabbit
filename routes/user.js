@@ -13,7 +13,7 @@ userRoute.get('/cart',auth.userAuth,userController.showCartData)
 userRoute.post('/saveUserName',auth.userAuth,userController.saveUserName)
 userRoute.get('/getCategory',userController.findAllCategory)
 userRoute.get('/userDetails',auth.userAuth,userController.fetchUser)
-userRoute.get('/addAddress',auth.userAuth,userController.addAddress)
+userRoute.post('/addAddress',auth.userAuth,userController.addAddress)
 
 
 
