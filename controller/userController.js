@@ -276,7 +276,47 @@ const updateAddress = async (req, res) => {
         console.log(error.message);
         res.status(500).send({ success: false, message: "something went wrong" })
     }
+
+    
 }
+
+const selectUserAddress = async (req, res) => {
+    try {
+        const userId = req.id
+        const addessId = req.query.id
+        const updateAddressStatus = await User.updateOne(
+            { _id: userId, "address._id": addessId },
+            {
+                $set: {
+                    "address.$.status": true
+                },
+            }
+        );
+        const userInfo = await User.find({ _id: userId }).select("address").lean();
+        userInfo.forEach(async (elem) => {
+            elem.address.forEach(async (innerelem) => {
+                if (addessId != innerelem._id) {
+                    await User.updateOne(
+                        { "address._id": innerelem._id },
+                        {
+                            $set: {
+                                "address.$.status": false
+                            }
+                        }
+                    )
+                }
+            })
+        })
+
+       res.status(200).send({status:true,message:"address selected successfully"})
+    } catch (error) {
+        console.log(error.message);
+       res.status(500).send({status:false,message:"something went wrong"})
+
+
+    }
+}
+
 
 module.exports = {
     userLogin,
@@ -290,5 +330,6 @@ module.exports = {
     addAddress,
     deleteAddress,
     getAddress,
-    updateAddress
+    updateAddress,
+    selectUserAddress
 }
