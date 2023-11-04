@@ -6,13 +6,14 @@ const CodOrder = async (req,res) =>{
    try {
     console.log("req.body : ",req.body)
      console.log("Hello this is order controller")
-     const {product,address,payment,totalAmount} = req.body;
+     const {paymentType,address,payment,totalAmount} = req.body;
      console.log("id", req.id)
      const orderData = new order({
         userId:req.id,
         product,
         address,
         payment,
+        paymentType,
         totalAmount,
         paymentStatus:"pending",
         orderStatus:"ordered",
@@ -36,13 +37,13 @@ const onlinePayment = async (req, res) => {
     try {
       console.log("entetered payment")
       var instance = new Razorpay({
-        key_id: 'rzp_test_Qt18oumm8k0BKa',
-        key_secret: 'vZ035cWAKANlYeO7bZxShcNT'
+        key_id: 'rzp_test_gpsSZl75alIqZ8',
+        key_secret: 'VFMBX9IMDUWNepz439p1RtP4'
       });
       const options = {
         amount: req.body.amount * 100,
         currency: "INR",
-      }
+      }   
       instance.orders.create(options, function (err, order) {
         if (err) {
           return res.send({ code: 500, message: "Server Err." })
@@ -60,17 +61,18 @@ const onlinePayment = async (req, res) => {
 
   const Verifypayment = async (req, res) => {
     try {
-    const {product,address,payment,totalAmount} = req.body;
+    const {paymentType,address,payment,totalAmount} = req.body;
       const body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id 
-      var expectedSignature = crypto.createHmac("sha256", "vZ035cWAKANlYeO7bZxShcNT");
+      var expectedSignature = crypto.createHmac("sha256", "VFMBX9IMDUWNepz439p1RtP4");
       await expectedSignature.update(body.toString());
       expectedSignature = await expectedSignature.digest("hex");
-      if (expectedSignature == req.body.response.razorpay_signature) {
+      if (expectedSignature == req.body.response.razorpay_signature){
         const orderData = new order({
             userId:req.id,
             product,
             address,
             payment,
+            paymentType,
             totalAmount,
             paymentStatus:"success",
             orderStatus:"ordered",
@@ -85,7 +87,6 @@ const onlinePayment = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   }
-
 
 // ---------------------------------------------------- getOrders --------------------------------------------
 
@@ -103,6 +104,50 @@ const getOrders = async(req,res) =>{
    }
 }
 
+// ----------------------------------------------------  order Management admin side--------------------------------------------
+
+const orderManage = async(req,res) =>{
+    try {
+       let orderId = req.query.id
+       const orderStatus = req.body.orderStatus;
+       let orderData;
+       if(orderStatus == "cancelled"){
+         orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"cancelled"}})
+       }else if(orderStatus == "delivered"){
+         orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"delivered"}})
+       }else if(orderStatus == "picked up"){
+         orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"pickedUp"}})
+       }else if(orderStatus == "ordered"){
+         orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"ordered"}})
+       }else if(orderStatus === "out for delivery"){
+        console.log("orderdata is out for delivery")
+        orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"out for delivery"}})
+       }else if(orderStatus == "processing"){
+        orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"processing"}})
+       }
+       return res.status(200).json({status:true,message:"successfully order status changes to"+" "+orderStatus,orderData})
+    } catch (error){      
+      res.status(500).json({message:"internal server error"})
+    }
+}
+// ---------------------------------------------------- order cancel by user --------------------------------------------
+
+const cancelOrder = async(req,res) =>{
+  try {
+     let orderId = req.query.id
+     let orderStatus = req.body.orderStatus
+     let orderData;
+     if(orderStatus === "cancelled"){
+       orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"cancelled"}})
+     }
+     return res.status(200).json({status:true,message:"successfully cancelled",orderData})
+     
+  } catch (error){
+    res.status(500).json({message:"internal server error"})
+  }
+}
+
+
 module.exports={
-    CodOrder,onlinePayment,Verifypayment,getOrders
+  CodOrder,onlinePayment,Verifypayment,getOrders,cancelOrder,orderManage,cancelOrder
 }

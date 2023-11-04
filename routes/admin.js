@@ -3,6 +3,8 @@ const adminController=require('../controller/adminController')
 const productController=require('../controller/productContoller')
 const riderController =require('../controller/riderController')
 const categoryController = require('../controller/categoryController')
+const orderController = require('../controller/orderController')
+const AdminAuth = require('../middleware/auth')
 const adminRoute=express()
 const multer = require('multer')
 const path = require('path');
@@ -44,6 +46,8 @@ adminRoute.patch('/list',categoryController.listCategory)
 adminRoute.patch('/unlist',categoryController.unlistCategory)
 adminRoute.delete('/deleteCategory',categoryController.deleteCategory)
 adminRoute.get('/getCategory',categoryController.getCategory)
+
+adminRoute.patch('/orderManage',AdminAuth.adminAuth,orderController.orderManage)
 
 
 
