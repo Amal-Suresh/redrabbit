@@ -14,6 +14,16 @@ userRoute.post('/saveUserName',auth.userAuth,userController.saveUserName)
 userRoute.get('/getCategory',userController.findAllCategory)
 userRoute.get('/userDetails',auth.userAuth,userController.fetchUser)
 
+userRoute.post('/addAddress',auth.userAuth,userController.addAddress)
+userRoute.delete('/deleteAddress',auth.userAuth,userController.deleteAddress)
+userRoute.get('/getAddress',auth.userAuth,userController.getAddress)
+userRoute.get('/getAllAddress',auth.userAuth,userController.getAllAddress)
+userRoute.post('/updateAddress',auth.userAuth,userController.updateAddress)
+
+
+
+
+
 
 
 

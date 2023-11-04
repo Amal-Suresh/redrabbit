@@ -5,6 +5,7 @@ const Category = require('../model/categoryModel')
 
 const Cart = require('../model/cartModel')
 const mongoose = require('mongoose')
+const { query } = require('express')
 
 const userLogin = async (req, res) => {
     try {
@@ -110,7 +111,7 @@ const showCartData = async (req, res) => {
         //         },
         //     },
         // ]) 
-        res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems1  })
+        res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems1 })
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ success: false, message: "Error getting cart data" })
@@ -187,6 +188,125 @@ const fetchUser = async (req, res) => {
     }
 }
 
+const addAddress = async (req, res) => {
+    try {
+        const userId = req.id
+        let { name, city, pin, mobile, address, state ,post,street} = req.body
+        const newAddress = {
+            name,
+            city,
+            pin,
+            mobile,
+            address,
+            state,
+            post,
+            street
+        }
+        const updateAddress = await User.findByIdAndUpdate({ _id: userId }, { $addToSet: { address: newAddress } })
+        if (updateAddress) {
+            res.status(200).send({ success: true,message: "address added successfully" })
+        } else {
+            res.status(401).send({ success: false, message: "failed to add address" })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }
+}
+
+
+const deleteAddress = async (req, res) => {
+    try {
+        const userId = req.id
+        const addId =req.query.id
+        const userAddress= await User.findOne({_id:userId})
+        const address=userAddress.address
+        const result = address.find(({ _id }) => _id == addId);
+        if(result){
+            const deleteAdres= await User.findByIdAndUpdate(userId, {
+                $pull: { address: { _id: addId } }
+            })
+          return  res.status(200).send({ success: true, message: "address deleted successfully" })
+
+        }else{
+            res.status(401).send({ success: false, message: "address not found" })
+        }  
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }
+}
+
+const getAddress = async (req, res) => {
+    try {
+        const addressId = req.query.id
+        const userId = req.id
+        const { address: [addressEditData] } = await User.findOne(
+            { _id: userId },
+            { address: { $elemMatch: { _id: addressId } } }).lean()
+            if(addressEditData){
+                res.status(200).send({ success: true, message: "address found",data:addressEditData })
+            }else{
+                res.status(401).send({ success: false, message: "address not found" })
+            }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }
+}
+
+
+const updateAddress = async (req, res) => {
+    try {
+        const userId = req.id
+        const addressId = req.body.id
+        const updateResult = await User.updateOne(
+            { _id: userId, 'address._id': addressId },
+            {
+                $set: {
+                    'address.$.name': req.body.name,
+                    'address.$.address': req.body.address,
+                    'address.$.city': req.body.city,
+                    'address.$.state': req.body.state,
+                    'address.$.mobile': req.body.mobile,
+                    'address.$.pin': req.body.pin,
+                    'address.$.post': req.body.post,
+                    'address.$.street': req.body.street,
+                },
+            }
+        );
+        if(updateResult){
+            res.status(200).send({ success: true, message: "address updated" })
+        }else{
+            res.status(401).send({ success: false, message: "address not updated" })
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }  
+}
+
+
+const getAllAddress = async (req, res) => {
+    try {
+        const userId = req.id
+        const userData = await User.findOne({ _id: userId }).lean()
+            if(userData){
+                let address=userData.address
+                console.log(address);
+                res.status(200).send({ success: true, message: "address found",data:address })
+            }else{
+                res.status(401).send({ success: false, message: "address not found" })
+            }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({ success: false, message: "something went wrong" })
+    }
+}
+
+
+
+
 module.exports = {
     userLogin,
     getProducts,
@@ -195,5 +315,10 @@ module.exports = {
     saveUserName,
     findAllCategory,
     checkIfUser,
-    fetchUser
+    fetchUser,
+    addAddress,
+    deleteAddress,
+    getAddress,
+    updateAddress,
+    getAllAddress
 }
