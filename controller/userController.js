@@ -270,6 +270,8 @@ const updateAddress = async (req, res) => {
                     'address.$.state': req.body.state,
                     'address.$.mobile': req.body.mobile,
                     'address.$.pin': req.body.pin,
+                    'address.$.post': req.body.post,
+                    'address.$.street': req.body.street,
                 },
             }
         );
@@ -281,9 +283,7 @@ const updateAddress = async (req, res) => {
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ success: false, message: "something went wrong" })
-    }
-
-    
+    }  
 }
 
 
