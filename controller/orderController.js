@@ -1,5 +1,5 @@
 const order = require('../model/orderModel')
-
+const cart = require('../model/cartModel')
 // ---------------------------------------------------- Cod payment --------------------------------------------
 
 const CodOrder = async (req,res) =>{
@@ -7,6 +7,9 @@ const CodOrder = async (req,res) =>{
     console.log("req.body : ",req.body)
      console.log("Hello this is order controller")
      const {paymentType,address,payment,totalAmount} = req.body;
+     const cartDatas = await cart.findOne({userId:req.id}).populate('products.productId')
+     const product = cartDatas.products
+     console.log("cartDatas",cartDatas)
      console.log("id", req.id)
      const orderData = new order({
         userId:req.id,
@@ -20,6 +23,7 @@ const CodOrder = async (req,res) =>{
         orderDate:Date.now()
      })
      const orders = await orderData.save()
+    //  const cartData = await cart.deleteOne({userId:req.id})
      if(orders){
          res.status(200).json({success:true,orders,message:"successfully order completed"})     
      }else{
@@ -51,7 +55,7 @@ const onlinePayment = async (req, res) => {
         return res.send({ code: 200, success: true, message: 'order created', data: order })
       })
   
-    } catch (error) {
+    }catch (error){
       res.status(500).json({ error: 'Internal server error' });
   
     }
@@ -79,6 +83,7 @@ const onlinePayment = async (req, res) => {
             orderDate:Date.now()
         })
         const orders = await orderData.save()
+        const cartData = await cart.deleteOne({userId:req.id})
         return res.send({ success: true , orders})
       } else {
         return res.status(404).json({ success: false })
@@ -93,8 +98,9 @@ const onlinePayment = async (req, res) => {
 const getOrders = async(req,res) =>{
    try {
       console.log("getOrders")
-      const orderData = await order.find().populate('userId').populate('product')
-      if(orderData){
+      console.log(req.id)
+      const orderData = await order.find({userId:req.id}).populate('product')
+      if(orderData.length>0){
         return res.status(200).json({status:true,orderData})
       }else{
         return res.status(200).json({status:false,message:"no orders found"})
@@ -114,7 +120,7 @@ const orderManage = async(req,res) =>{
        if(orderStatus == "cancelled"){
          orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"cancelled"}})
        }else if(orderStatus == "delivered"){
-         orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"delivered"}})
+         orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"delivered",paymentStatus:"success"}})
        }else if(orderStatus == "picked up"){
          orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"pickedUp"}})
        }else if(orderStatus == "ordered"){

@@ -15,8 +15,7 @@ const orderSchema =mongoose.Schema({
         // required:true
     },
     product:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:'cart',
+        type:Array,
         required:true
     },
     totalAmount:{
