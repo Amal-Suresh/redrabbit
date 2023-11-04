@@ -17,6 +17,8 @@ const userSchema =mongoose.Schema({
     }, address: [{
         name:{type:String},
         address:{type:String},
+        street:{type:String},
+        post:{type:String},
         city:{type:String},
         pin:{type:Number},
         state:{type:String},

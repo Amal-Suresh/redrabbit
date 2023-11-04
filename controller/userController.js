@@ -191,7 +191,7 @@ const fetchUser = async (req, res) => {
 const addAddress = async (req, res) => {
     try {
         const userId = req.id
-        let { name, city, pin, mobile, address, state } = req.body
+        let { name, city, pin, mobile, address, state ,post,street} = req.body
         const newAddress = {
             name,
             city,
@@ -199,11 +199,12 @@ const addAddress = async (req, res) => {
             mobile,
             address,
             state,
+            post,
+            street
         }
         const updateAddress = await User.findByIdAndUpdate({ _id: userId }, { $addToSet: { address: newAddress } })
         if (updateAddress) {
-            const updatedUser = await User.findById({ _id: userId }).populate('address').lean()
-            res.status(200).send({ success: true, data: updatedUser.address, message: "address added successfully" })
+            res.status(200).send({ success: true,message: "address added successfully" })
         } else {
             res.status(401).send({ success: false, message: "failed to add address" })
         }
@@ -217,14 +218,19 @@ const addAddress = async (req, res) => {
 const deleteAddress = async (req, res) => {
     try {
         const userId = req.id
-        const deleteAdres= await User.findByIdAndUpdate(userId, {
-            $pull: { address: { _id: req.query.id } }
-        })
-        if(deleteAdres){
-            res.status(200).send({ success: true, message: "address deleted" })
+        const addId =req.query.id
+        const userAddress= await User.findOne({_id:userId})
+        const address=userAddress.address
+        const result = address.find(({ _id }) => _id == addId);
+        if(result){
+            const deleteAdres= await User.findByIdAndUpdate(userId, {
+                $pull: { address: { _id: addId } }
+            })
+          return  res.status(200).send({ success: true, message: "address deleted successfully" })
+
         }else{
-            res.status(401).send({ success: false, message: "failed to delete address" })
-        }
+            res.status(401).send({ success: false, message: "address not found" })
+        }  
     } catch (error) {
         console.log(error.message);
         res.status(500).send({ success: false, message: "something went wrong" })
@@ -280,42 +286,25 @@ const updateAddress = async (req, res) => {
     
 }
 
-const selectUserAddress = async (req, res) => {
+
+const getAllAddress = async (req, res) => {
     try {
         const userId = req.id
-        const addessId = req.query.id
-        const updateAddressStatus = await User.updateOne(
-            { _id: userId, "address._id": addessId },
-            {
-                $set: {
-                    "address.$.status": true
-                },
+        const userData = await User.findOne({ _id: userId }).lean()
+            if(userData){
+                let address=userData.address
+                console.log(address);
+                res.status(200).send({ success: true, message: "address found",data:address })
+            }else{
+                res.status(401).send({ success: false, message: "address not found" })
             }
-        );
-        const userInfo = await User.find({ _id: userId }).select("address").lean();
-        userInfo.forEach(async (elem) => {
-            elem.address.forEach(async (innerelem) => {
-                if (addessId != innerelem._id) {
-                    await User.updateOne(
-                        { "address._id": innerelem._id },
-                        {
-                            $set: {
-                                "address.$.status": false
-                            }
-                        }
-                    )
-                }
-            })
-        })
-
-       res.status(200).send({status:true,message:"address selected successfully"})
     } catch (error) {
         console.log(error.message);
-       res.status(500).send({status:false,message:"something went wrong"})
-
-
+        res.status(500).send({ success: false, message: "something went wrong" })
     }
 }
+
+
 
 
 module.exports = {
@@ -331,5 +320,5 @@ module.exports = {
     deleteAddress,
     getAddress,
     updateAddress,
-    selectUserAddress
+    getAllAddress
 }
