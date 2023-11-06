@@ -6,11 +6,22 @@ const Razorpay = require('razorpay')
 const CodOrder = async (req,res) =>{
    try {
      const {paymentType,address,payment,totalAmount} = req.body;
-     const cartDatas = await cart.findOne({userId:req.id}).populate('products.productId')
+     const cartDatas = await cart.findOne({userId:req.id}).populate("products.productId")
+     console.log("cartDatas : ",cartDatas)
      const product = cartDatas.products
+
+     const products = cartDatas.products.map((item) => ({
+      productId: item.productId,
+      name:item.productId.name,
+      image:item.productId.image,
+      price:item.productId.price,
+      quantity: item.quantity,
+    }));
+     console.log("product",product)
+     console.log("products : ",products)
      const orderData = new order({
         userId:req.id,
-        product,
+        product:products,
         address,
         payment,
         paymentType,
@@ -98,7 +109,7 @@ const getOrders = async(req,res) =>{
    try {
       console.log("getOrders")
       console.log(req.id)
-      const orderData = await order.find({userId:req.id}).populate('product')
+      const orderData = await order.find({userId:req.id}).populate('product.productId')
       if(orderData.length>0){
         return res.status(200).json({status:true,orderData})
       }else{

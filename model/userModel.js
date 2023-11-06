@@ -4,8 +4,8 @@ const userSchema =mongoose.Schema({
     name:{
         type:String,  
     },
-     mobile:{
-        type:Number,
+    mobile:{
+        type:String,
         require:true
     },
     image:{
