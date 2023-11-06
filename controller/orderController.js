@@ -7,9 +7,6 @@ const CodOrder = async (req,res) =>{
    try {
      const {paymentType,address,payment,totalAmount} = req.body;
      const cartDatas = await cart.findOne({userId:req.id}).populate("products.productId")
-     console.log("cartDatas : ",cartDatas)
-     const product = cartDatas.products
-
      const products = cartDatas.products.map((item) => ({
       productId: item.productId,
       name:item.productId.name,
@@ -17,8 +14,6 @@ const CodOrder = async (req,res) =>{
       price:item.productId.price,
       quantity: item.quantity,
     }));
-     console.log("product",product)
-     console.log("products : ",products)
      const orderData = new order({
         userId:req.id,
         product:products,
@@ -31,7 +26,7 @@ const CodOrder = async (req,res) =>{
         orderDate:Date.now()
      })
      const orders = await orderData.save()
-    //  const cartData = await cart.deleteOne({userId:req.id})
+     const cartData = await cart.deleteOne({userId:req.id})
      if(orders){
          res.status(200).json({success:true,orders,message:"successfully order completed"})     
      }else{
@@ -74,7 +69,13 @@ const onlinePayment = async (req, res) => {
     try {
     const {paymentType,address,payment,totalAmount} = req.body; 
     const cartDatas = await cart.findOne({userId:req.id}).populate('products.productId')
-    const product = cartDatas.products
+    const products = cartDatas.products.map((item) => ({
+      productId: item.productId,
+      name:item.productId.name,
+      image:item.productId.image,
+      price:item.productId.price,
+      quantity: item.quantity,
+    }));
       const body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id 
       var expectedSignature = crypto.createHmac("sha256", "VFMBX9IMDUWNepz439p1RtP4");
       await expectedSignature.update(body.toString());
@@ -82,7 +83,7 @@ const onlinePayment = async (req, res) => {
       if (expectedSignature == req.body.response.razorpay_signature){
         const orderData = new order({
             userId:req.id,
-            product,
+            product:products,
             address,
             payment,
             paymentType,
