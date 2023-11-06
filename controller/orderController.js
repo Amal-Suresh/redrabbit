@@ -103,6 +103,22 @@ const onlinePayment = async (req, res) => {
     }
   }
 
+// ---------------------------------------------------- getOrders by admin--------------------------------------------
+
+const getallOrders = async(req,res) =>{
+  try {
+     console.log("getallorders")
+     const orderData = await order.find().populate('product.productId').populate('userId')
+     if(orderData.length>0){
+       return res.status(200).json({status:true,orderData})
+     }else{
+       return res.status(200).json({status:false,message:"no orders found"})
+     }
+  } catch (error){
+    res.status(500).json({message:"internal server error"})
+  }
+}
+
 // ---------------------------------------------------- getOrders --------------------------------------------
 
 
@@ -110,7 +126,7 @@ const getOrders = async(req,res) =>{
    try {
       console.log("getOrders")
       console.log(req.id)
-      const orderData = await order.find({userId:req.id}).populate('product.productId')
+      const orderData = await order.find({userId:req.id}).populate('product.productId').populate("userId")
       if(orderData.length>0){
         return res.status(200).json({status:true,orderData})
       }else{
@@ -120,6 +136,7 @@ const getOrders = async(req,res) =>{
      res.status(500).json({message:"internal server error"})
    }
 }
+
 
 
 // ----------------------------------------------------  order Management admin side--------------------------------------------
@@ -167,5 +184,5 @@ const cancelOrder = async(req,res) =>{
 
 
 module.exports={
-  CodOrder,onlinePayment,Verifypayment,getOrders,cancelOrder,orderManage,cancelOrder
+  CodOrder,onlinePayment,Verifypayment,getOrders,cancelOrder,orderManage,cancelOrder,getallOrders
 }
