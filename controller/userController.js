@@ -32,6 +32,7 @@ const userLogin = async (req, res) => {
 
 const getProducts = async (req, res) => {
     try {
+        console.log("products >>>>>>>")
         const sort = req.query.sort ?? 'default'
         const search = req.query.name ?? '.*'
         const category = req.query.categoryId ?? ''
@@ -90,7 +91,6 @@ const showCartData = async (req, res) => {
             .populate('products.productId', 'name category image description price')
             .select('products')
             .lean();
-
         // const cartItems = await Cart.aggregate([
         //     { $match: { userId: new mongoose.Types.ObjectId(userId) } },
         //     {
