@@ -1,6 +1,8 @@
 const order = require('../model/orderModel')
 const cart = require('../model/cartModel')
 const Razorpay = require('razorpay')
+const crypto = require('crypto')
+
 // ---------------------------------------------------- Cod payment --------------------------------------------
 
 const CodOrder = async (req,res) =>{
@@ -40,28 +42,58 @@ const CodOrder = async (req,res) =>{
 
 // ----------------------------------------------------Initialize razorpay --------------------------------------------
 
-const onlinePayment = async (req, res) => {
-    try {
-      console.log("entetered payment")
-      var instance = new Razorpay({
+// const onlinePayment = async (req, res) => {
+//     try {
+//       console.log("entetered payment")
+//       var instance = new Razorpay({
+//         key_id: 'rzp_test_Qt18oumm8k0BKa',
+//         key_secret: 'vZ035cWAKANlYeO7bZxShcNT'
+//       })
+//       const options = {
+//         amount: req.body.amount * 100,
+//         currency: "INR",
+//       }   
+//       instance.orders.create(options, function (err, order) {
+//         if (err) {
+//           console.log("Errormessage : ",err.message)
+//           return res.send({ code: 500, message:"server err" })
+//         }
+//         return res.send({ code: 200, success: true, message: 'order created', data: order })
+//       })
+  
+//     }catch (error){
+//       res.status(500).json({ error: 'Internal server error' });
+//     }
+//   }
+
+
+const onlinePayment = async(req,res)=>{
+  try {
+      console.log("reached order",req.body);
+      const instance=new Razorpay({
         key_id: 'rzp_test_gpsSZl75alIqZ8',
         key_secret: 'VFMBX9IMDUWNepz439p1RtP4'
       });
-      const options = {
-        amount: req.body.amount * 100,
-        currency: "INR",
-      }   
-      instance.orders.create(options, function (err, order) {
-        if (err) {
-          return res.send({ code: 500, message: "Server Err." })
-        }
-        return res.send({ code: 200, success: true, message: 'order created', data: order })
+     
+      const options ={
+          amount:req.body.totalAmount*100,
+          currency:"INR",
+          receipt:crypto.randomBytes(10).toString('hex'),
+      };
+      instance.orders.create(options,(error,order)=>{
+          if(error){
+              return res.status(500).json({success:false, message:"Something went wrong!"})
+          }else{
+              res.status(200).json({success:true,message:"success",data:order})
+          }
       })
-  
-    }catch (error){
-      res.status(500).json({ error: 'Internal server error' });
-    }
+  } catch (error) {
+      console.log(error.message);
+      res.status(500).json({success:false, message:"Something went wrong!"})
+      
   }
+}
+
 
 // ---------------------------------------------------- Varify --------------------------------------------
 
