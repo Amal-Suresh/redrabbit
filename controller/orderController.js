@@ -1,16 +1,13 @@
 const order = require('../model/orderModel')
 const cart = require('../model/cartModel')
+const Razorpay = require('razorpay')
 // ---------------------------------------------------- Cod payment --------------------------------------------
 
 const CodOrder = async (req,res) =>{
    try {
-    console.log("req.body : ",req.body)
-     console.log("Hello this is order controller")
      const {paymentType,address,payment,totalAmount} = req.body;
      const cartDatas = await cart.findOne({userId:req.id}).populate('products.productId')
      const product = cartDatas.products
-     console.log("cartDatas",cartDatas)
-     console.log("id", req.id)
      const orderData = new order({
         userId:req.id,
         product,
@@ -57,7 +54,6 @@ const onlinePayment = async (req, res) => {
   
     }catch (error){
       res.status(500).json({ error: 'Internal server error' });
-  
     }
   }
 
@@ -65,7 +61,9 @@ const onlinePayment = async (req, res) => {
 
   const Verifypayment = async (req, res) => {
     try {
-    const {paymentType,address,payment,totalAmount} = req.body;
+    const {paymentType,address,payment,totalAmount} = req.body; 
+    const cartDatas = await cart.findOne({userId:req.id}).populate('products.productId')
+    const product = cartDatas.products
       const body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id 
       var expectedSignature = crypto.createHmac("sha256", "VFMBX9IMDUWNepz439p1RtP4");
       await expectedSignature.update(body.toString());
@@ -95,6 +93,7 @@ const onlinePayment = async (req, res) => {
 
 // ---------------------------------------------------- getOrders --------------------------------------------
 
+
 const getOrders = async(req,res) =>{
    try {
       console.log("getOrders")
@@ -109,6 +108,7 @@ const getOrders = async(req,res) =>{
      res.status(500).json({message:"internal server error"})
    }
 }
+
 
 // ----------------------------------------------------  order Management admin side--------------------------------------------
 
@@ -147,7 +147,7 @@ const cancelOrder = async(req,res) =>{
        orderData = await order.updateOne({_id:orderId},{$set:{orderStatus:"cancelled"}})
      }
      return res.status(200).json({status:true,message:"successfully cancelled",orderData})
-     
+
   } catch (error){
     res.status(500).json({message:"internal server error"})
   }

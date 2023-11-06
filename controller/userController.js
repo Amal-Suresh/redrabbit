@@ -110,8 +110,6 @@ const showCartData = async (req, res) => {
                 },
             },
         ])
-       
-
         res.status(200).send({ success: true, message: "Cart items fetched successfully", data: cartItems })
     } catch (error) {
         console.log(error.message);
