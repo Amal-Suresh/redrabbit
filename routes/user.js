@@ -28,6 +28,5 @@ userRoute.post('/onlinePayment',auth.userAuth,orderController.onlinePayment)
 userRoute.post('/verifypayment',auth.userAuth,orderController.Verifypayment)
 userRoute.get('/getOrders',auth.userAuth,orderController.getOrders)
 
-
-userRoute.patch('/cancelOrder',auth.userAuth,orderController.cancelOrder)
+userRoute.post('/cancelOrder',auth.userAuth,orderController.cancelOrder)
 module.exports=userRoute;
