@@ -42,34 +42,9 @@ const CodOrder = async (req,res) =>{
 
 // ----------------------------------------------------Initialize razorpay --------------------------------------------
 
-// const onlinePayment = async (req, res) => {
-//     try {
-//       console.log("entetered payment")
-//       var instance = new Razorpay({
-//         key_id: 'rzp_test_Qt18oumm8k0BKa',
-//         key_secret: 'vZ035cWAKANlYeO7bZxShcNT'
-//       })
-//       const options = {
-//         amount: req.body.amount * 100,
-//         currency: "INR",
-//       }   
-//       instance.orders.create(options, function (err, order) {
-//         if (err) {
-//           console.log("Errormessage : ",err.message)
-//           return res.send({ code: 500, message:"server err" })
-//         }
-//         return res.send({ code: 200, success: true, message: 'order created', data: order })
-//       })
-  
-//     }catch (error){
-//       res.status(500).json({ error: 'Internal server error' });
-//     }
-//   }
-
 
 const onlinePayment = async(req,res)=>{
   try {
-      console.log("reached order",req.body);
       const instance=new Razorpay({
         key_id: 'rzp_test_gpsSZl75alIqZ8',
         key_secret: 'VFMBX9IMDUWNepz439p1RtP4'
@@ -108,11 +83,11 @@ const onlinePayment = async(req,res)=>{
       price:item.productId.price,
       quantity: item.quantity,
     }));
-      const body = req.body.response.razorpay_order_id + "|" + req.body.response.razorpay_payment_id 
+      const body = req.body.razorpay_order_id + "|" + req.body.razorpay_payment_id 
       var expectedSignature = crypto.createHmac("sha256", "VFMBX9IMDUWNepz439p1RtP4");
       await expectedSignature.update(body.toString());
       expectedSignature = await expectedSignature.digest("hex");
-      if (expectedSignature == req.body.response.razorpay_signature){
+      if (expectedSignature == req.body.razorpay_signature){
         const orderData = new order({
             userId:req.id,
             product:products,
@@ -131,22 +106,23 @@ const onlinePayment = async(req,res)=>{
         return res.status(404).json({ success: false })
       }
     } catch (error) {
+      
       res.status(500).json({ error: 'Internal server error' });
     }
   }
 
-// ---------------------------------------------------- getOrders by admin--------------------------------------------
+// ----------------------------------------------------getOrders by admin--------------------------------------------
 
 const getallOrders = async(req,res) =>{
   try {
-     console.log("getallorders")
-     const orderData = await order.find().populate('product.productId').populate('userId')
+     
+     const orderData = await order.find().populate('product.productId').populate('userId').sort({orderDate:-1})
      if(orderData.length>0){
        return res.status(200).json({status:true,orderData})
      }else{
        return res.status(200).json({status:false,message:"no orders found"})
      }
-  } catch (error){
+  }catch(error){
     res.status(500).json({message:"internal server error"})
   }
 }
@@ -156,9 +132,9 @@ const getallOrders = async(req,res) =>{
 
 const getOrders = async(req,res) =>{
    try {
-      console.log("getOrders")
+     
       console.log(req.id)
-      const orderData = await order.find({userId:req.id}).populate('product.productId').populate("userId")
+      const orderData = await order.find({userId:req.id}).populate('product.productId').populate("userId").sort({orderDate:-1})
       if(orderData.length>0){
         return res.status(200).json({status:true,orderData})
       }else{

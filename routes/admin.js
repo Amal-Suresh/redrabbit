@@ -47,7 +47,7 @@ adminRoute.patch('/unlist',categoryController.unlistCategory)
 adminRoute.delete('/deleteCategory',categoryController.deleteCategory)
 adminRoute.get('/getCategory',categoryController.getCategory)
 
-adminRoute.patch('/orderManage',AdminAuth.adminAuth,orderController.orderManage)
+adminRoute.post('/orderManage',AdminAuth.adminAuth,orderController.orderManage)
 adminRoute.get('/getallOrders',AdminAuth.adminAuth,orderController.getallOrders)
 
 
