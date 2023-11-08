@@ -237,7 +237,7 @@ const deleteAddress = async (req, res) => {
     }
 }
 
-const getAddress = async (req, res) => {
+const   getAddress = async (req, res) => {
     try {
         const addressId = req.query.id
         const userId = req.id
