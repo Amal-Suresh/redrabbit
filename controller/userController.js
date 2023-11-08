@@ -12,9 +12,13 @@ const userLogin = async (req, res) => {
         const { mobile } = req.body
         const userData = await User.findOne({ mobile: mobile })
         if (userData) {
-            const token = jwt.sign({ id: userData._id, role: "user" }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
-            const data = token
-            res.status(200).send({ success: true, message: "login successfull", data })
+            if(userData.status){
+                const token = jwt.sign({ id: userData._id, role: "user" }, process.env.JWT_SECRET_KEY, { expiresIn: '1d' })
+                const data = token
+                res.status(200).send({ success: true, message: "login successfull", data })
+            }else{
+                res.status(202).send({success:false,message:"you were bolcked by admin"})  
+            }
         } else {
             const newUser = new User({
                 mobile
@@ -237,7 +241,7 @@ const deleteAddress = async (req, res) => {
     }
 }
 
-const getAddress = async (req, res) => {
+const   getAddress = async (req, res) => {
     try {
         const addressId = req.query.id
         const userId = req.id

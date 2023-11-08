@@ -1,5 +1,6 @@
 const Admin = require('../model/adminModel')
 const jwt = require('jsonwebtoken')
+const User =require('../model/userModel')
 
 const adminLogin = async (req, res) => {
     try {
@@ -43,7 +44,40 @@ const checkIfAdmin = async (req, res) => {
 };
 
 
+const getUserList =async(req,res)=>{
+    try {
+        const userList = await User.find()
+        if(userList){
+            res.status(200).send({success:true,message:"fetched user details",data:userList})
+        }else{
+            res.status(401).send({success:false,message:"unable to fetch user details"})
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({success:false,message:"something went wrong"})
+    }
+}
+const blockUnblockUser = async(req,res)=>{
+    try {
+        const userData = await User.findOne({_id:req.query.id})
+        userData.status=!userData.status
+        const saveUserData = await userData.save()
+        if(saveUserData){
+            res.status(200).send({success:true,message:"user status changed successfully"})
+        }else{
+            res.status(201).send({success:false,message:"failled to change user status"})
+        }
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).send({success:false,message:"something went wrong"})
+        
+    }
+}
+
+
 module.exports = {
     adminLogin,
-    checkIfAdmin
+    checkIfAdmin,
+    getUserList,
+    blockUnblockUser
 }

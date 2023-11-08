@@ -1,4 +1,6 @@
 const jwt = require('jsonwebtoken')
+const User =require('../model/userModel');
+const { removeAllListeners } = require('../routes/user');
 
   
 const adminAuth = async (req, res, next) => {
@@ -42,7 +44,15 @@ const userAuth = async (req, res, next) => {
                     return res.status(401).send({ success: false, message: "token expired" })
                 } else {                   
                     req.id = encoded.id
-                    next()
+                    const checkUser = async(id)=>{
+                        const userData =await User.findOne({_id:id})
+                        if(userData.status){
+                            next()
+                        }else{
+                            res.status(202).send({success:false,message:"you were bolcked by admin"})  
+                        }
+                    }
+                    checkUser(req.id) 
                 }
             } else {
                 res.status(401).send({ message: "unknown token", success: false });
