@@ -7,7 +7,7 @@ const crypto = require('crypto')
 
 const CodOrder = async (req,res) =>{
    try {
-     const {paymentType,address,payment,totalAmount} = req.body;
+     const {paymentType,address,payment,totalAmount,pickupDate,pickupTime} = req.body;
      const cartDatas = await cart.findOne({userId:req.id}).populate("products.productId")
      const products = cartDatas.products.map((item) => ({
       productId: item.productId,
@@ -20,6 +20,8 @@ const CodOrder = async (req,res) =>{
         userId:req.id,
         product:products,
         address,
+        pickupDate,
+        pickupTime,
         payment,
         paymentType,
         totalAmount,
@@ -74,7 +76,7 @@ const onlinePayment = async(req,res)=>{
 
   const Verifypayment = async (req, res) => {
     try {
-    const {paymentType,address,payment,totalAmount} = req.body; 
+    const {paymentType,address,payment,totalAmount,pickupDate,pickupTime} = req.body; 
     const cartDatas = await cart.findOne({userId:req.id}).populate('products.productId')
     const products = cartDatas.products.map((item) => ({
       productId: item.productId,
@@ -92,6 +94,8 @@ const onlinePayment = async(req,res)=>{
             userId:req.id,
             product:products,
             address,
+            pickupDate,
+            pickupTime,
             payment,
             paymentType,
             totalAmount,
@@ -106,7 +110,6 @@ const onlinePayment = async(req,res)=>{
         return res.status(404).json({ success: false })
       }
     } catch (error) {
-      
       res.status(500).json({ error: 'Internal server error' });
     }
   }

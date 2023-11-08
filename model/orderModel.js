@@ -22,6 +22,12 @@ const orderSchema =mongoose.Schema({
         type:Number,
         required:true
     },
+    pickupDate:{
+        type:String
+    },
+    pickupTime:{
+        type:String
+    },
     payment:{
         type:String,
         required:true
