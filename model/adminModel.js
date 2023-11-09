@@ -11,6 +11,10 @@ const adminSchema =mongoose.Schema({
     image:{
         type:String, 
     },
+    password:{
+        type:String,
+        require:true 
+    },
     status:{
         type:Boolean,
         default:true
