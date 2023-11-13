@@ -11,7 +11,6 @@ userRoute.get('/products', userController.getProducts)
 userRoute.post('/addtocart',auth.userAuth,userController.updateCart)
 userRoute.get('/cart',auth.userAuth,userController.showCartData)
 
-userRoute.post('/saveUserName',userController.saveUserName)
 userRoute.post('/saveUserName',auth.userAuth,userController.saveUserName)
 userRoute.get('/getCategory',userController.findAllCategory)
 userRoute.get('/userDetails',auth.userAuth,userController.fetchUser)

@@ -56,6 +56,7 @@ const deleteProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
     try {
+        console.log(req.body,"llllllllllllllllllll");
         const { id, category, description, name, price } = req.body
         const findProduct = await Product.findOne({ _id: id })
         let imageUrl = ''

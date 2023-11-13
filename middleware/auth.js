@@ -42,11 +42,11 @@ const userAuth = async (req, res, next) => {
             if (encoded.role === 'user') {
                 if (encoded.exp && Date.now() >= encoded.exp * 1000) {
                     return res.status(401).send({ success: false, message: "token expired" })
-                } else {                   
+                } else {     
                     req.id = encoded.id
                     const checkUser = async(id)=>{
                         const userData =await User.findOne({_id:id})
-                        if(userData.status){
+                        if(userData?.status){
                             next()
                         }else{
                             res.status(202).send({success:false,message:"you were bolcked by admin"})  
